@@ -8,6 +8,7 @@ WEC components and files will be developed in this organization
 
 ## Directory Tree
 
+```
 my_app/
 ├── app.py                 # Main app file to run the Streamlit app
 ├── installation.txt       # Instructions for installing dependencies
@@ -22,3 +23,4 @@ my_app/
 │   ├── About.py           # About page
 │   ├── Contact.py         # Contact page
 │   └── ...                # Additional pages
+```
