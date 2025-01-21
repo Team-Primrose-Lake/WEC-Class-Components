@@ -1,6 +1,8 @@
 # Import Libraries
 import streamlit as st
+
 import numpy as np
+
 
 # Set the page layout and title
 st.set_page_config(page_title="Multi-Page Streamlit App", layout="wide")
@@ -101,3 +103,23 @@ st.download_button(
 st.write("Thank you for exploring this app!")
 
 # End of the Streamlit app
+
+#Description: Run the app via terminal block
+#Author: Mohammad Vohra
+#Date: Jan 25, 2025
+#URL: https://www.linkedin.com/pulse/transform-your-applications-how-convert-streamlit-app-mohammad-vohra-1qfsf/
+import streamlit.web.cli as stcli
+import os, sys
+
+def resolve_path(path):
+    return os.path.abspath(os.path.join(os.getcwd(), path))
+
+
+if __name__ == "__main__":
+    sys.argv = [
+        "streamlit",
+        "run",
+        resolve_path("app.py"),
+        "--global.developmentMode=false",
+    ]
+    sys.exit(stcli.main())
