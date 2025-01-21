@@ -1,15 +1,33 @@
-import openai
+# import openai
 
-# Replace with your actual API key
-api_key = "your_api_key_here"
+# Ensure you have your API key set
 
-response = openai.ChatCompletion.create(
-    model="gpt-4",  # Use "gpt-3.5-turbo" for a cheaper option
+
+from openai import OpenAI
+import os
+
+# client = OpenAI()
+_my_api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key = _my_api_key)
+class CChatGPT:
+    def __init__(self):
+        pass
+
+    def sendMessage(self,msg):
+        pass
+        return 0
+
+
+
+completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Tell me a joke about AI."}
-    ],
-    max_tokens=100
+        {
+            "role": "user",
+            "content": "Write a haiku about recursion in programming."
+        }
+    ]
 )
 
-print(response['choices'][0]['message']['content'])
+print(completion.choices[0].message)
