@@ -2,6 +2,9 @@
 import streamlit as st
 import numpy as np
 
+# Set the page layout and title
+st.set_page_config(page_title="Multi-Page Streamlit App", layout="wide")
+
 # Set the title of the web app
 st.title("Website Sample!")
 
@@ -30,8 +33,12 @@ if name and age:
 # Divider for the next section
 st.divider()
 
+
 # Create a sidebar for additional controls
 st.sidebar.header("Sidebar Controls")
+
+st.sidebar.title("Navigation")
+
 
 # Slider for selecting a value
 slider_value = st.sidebar.slider("Select a value:", 0, 100, 50)
