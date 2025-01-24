@@ -3,6 +3,14 @@ from openai import OpenAI
 import json
 import os
 
+"""
+What is chain of thought?
+
+Chain of thought
+You can ask the model to output an answer in a structured, 
+step-by-step way, to guide the user through the solution.
+
+"""
 
 class Step(BaseModel):
     """
