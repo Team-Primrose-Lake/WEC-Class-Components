@@ -1,0 +1,29 @@
+{
+    "steps": [
+        {
+            "explanation": "We are given the equation 8x + 7 = -23. To find the value of x, we need to isolate x on one side of the equation. We'll start by getting rid of the constant term (7) on the left side.",
+            "output": "8x + 7 = -23"
+        },
+        {
+            "explanation": "Subtract 7 from both sides of the equation to eliminate the +7 on the left side.",
+            "output": "8x = -23 - 7"
+        },
+        {
+            "explanation": "Calculate -23 - 7 to simplify the equation further.",
+            "output": "8x = -30"
+        },
+        {
+            "explanation": "Now that we have 8x = -30, divide both sides by 8 to solve for x.",
+            "output": "x = -30 / 8"
+        },
+        {
+            "explanation": "Simplify -30 divided by 8 by writing it as a fraction in its simplest form.",
+            "output": "x = -15/4"
+        },
+        {
+            "explanation": "Convert the fraction -15/4 into a decimal for a more intuitive interpretation.",
+            "output": "x = -3.75"
+        }
+    ],
+    "final_answer": "x = -3.75"
+}
