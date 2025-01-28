@@ -1,125 +1,106 @@
-# Import Libraries
+# app.py
 import streamlit as st
-
+import matlab.engine
 import numpy as np
+import pandas as pd
+import os
+from PIL import Image
 
 
-# Set the page layout and title
-st.set_page_config(page_title="Multi-Page Streamlit App", layout="wide")
+# Function to start MATLAB engine and add paths
+eng = matlab.engine.start_matlab()
+eng.addpath(r"C:\\SHAMM\\github repos\\WEC-Class-Components\\matlab_scripts")
 
-# Set the title of the web app
-st.title("Website Sample!")
+#eng = start_matlab()
 
-# Add a header to introduce the app
-st.header("Welcome to My First Streamlit App")
+# Streamlit App Layout
+st.title("Fire Hall Coverage Simulation")
 
-# Add a brief description
-st.write("This app demonstrates basic Streamlit components with examples and explanations.")
+st.sidebar.header("Input Parameters")
 
-# Divider for visual separation
-st.divider()
+# File upload for input file
+uploaded_file = st.sidebar.file_uploader("Upload Input File", type=["csv"])
 
-# Create an input section using Streamlit components
-st.subheader("Interactive Input Section")
+# Output file name
+outputfile = st.sidebar.text_input("Output CSV File Name", "output_centers.csv")
 
-# Text input field for the user to enter their name
-name = st.text_input("Enter your name:")
+# Output image file name
+#output_image = st.sidebar.text_input("Output Plot Image", "coverage_plot.png")
 
-# Number input field for age
-age = st.number_input("Enter your age:", min_value=0, max_value=120, step=1)
+# Buffer radius 'r'
+r = st.sidebar.number_input("Buffer Radius (r) in km", min_value=0.1, value=2.5, step=0.1)
 
-# Display entered information dynamically
-if name and age:
-    st.success(f"Hello, {name}! You are {age} years old.")
+# Overlap factor
+overlap_factor = st.sidebar.number_input("Overlap Factor", min_value=0.0, value=0.85, step=0.05)
 
-# Divider for the next section
-st.divider()
+# Visualization option
+visualize_circles = st.sidebar.checkbox("Visualize Circles", value=True)
 
+# Button to execute MATLAB function
+if st.sidebar.button("Run Processing"):
+    if uploaded_file:
+        # Save the uploaded file to a temporary location
+        temp_input_path = r"data\\temp_input.csv"
+        with open(temp_input_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        
+        try:
+            # Call the MATLAB function
+            eng.process_geodata(temp_input_path, outputfile, r, overlap_factor, visualize_circles, nargout=1)
+            #eng.read_lat_lon(temp_input_path)
+            st.success(f"Processing completed! Results saved to `{outputfile}`.")
+            
+            # Provide a download link for the output CSV
+            if os.path.exists(outputfile):
+                with open(outputfile, "rb") as f:
+                    st.download_button(
+                        label="Download Output CSV",
+                        data=f,
+                        file_name=outputfile,
+                        mime="text/csv"
+                    )
+            else:
+                st.warning(f"Output file `{outputfile}` not found.")
+            
+            # Display the CSV contents
+            if os.path.exists(outputfile):
+                df = pd.read_csv(outputfile)
+                st.write("### Valid Circle Centers:")
+                st.dataframe(df)
+            
+            # Display the plot image if visualization was enabled
+            if visualize_circles and os.path.exists(output_image):
+                st.write("### Coverage Plot:")
+                image = Image.open(output_image)
+                st.image(image, caption="Coverage Plot", use_column_width=True)
+            elif visualize_circles:
+                st.warning("Plot image not found.")
+        
+        except Exception as e:
+            st.error(f"An error occurred during processing: {e}")
+        finally:
+            # Clean up temporary file
+            if os.path.exists(temp_input_path):
+                os.remove(temp_input_path)
+    else:
+        st.warning("Please upload an input file to proceed.")
+        
+# Description: Run the app via terminal block
+# Author: Mohammad Vohra
+# Date: Jan 25, 2025
+# URL: https://www.linkedin.com/pulse/transform-your-applications-how-convert-streamlit-app-mohammad-vohra-1qfsf/
+# import streamlit.web.cli as stcli
+# import os, sys
 
-# Create a sidebar for additional controls
-st.sidebar.header("Sidebar Controls")
-
-st.sidebar.title("Navigation")
-
-
-# Slider for selecting a value
-slider_value = st.sidebar.slider("Select a value:", 0, 100, 50)
-
-# Checkbox to toggle information
-show_more_info = st.sidebar.checkbox("Show more information")
-
-# Display more information if checkbox is checked
-if show_more_info:
-    st.sidebar.write("This is additional information displayed based on your choice.")
-
-# Divider for visual separation
-st.divider()
-
-# Add an image section
-st.subheader("Image Display")
-
-# Display an image from a URL
-st.image("https://static.streamlit.io/examples/owl.jpg", caption="An owl", width=300)
-
-# Divider for visual separation
-st.divider()
-
-# Create a graph using Streamlit and NumPy
-st.subheader("Data Visualization Example")
-
-# Import NumPy for data generation
-import numpy as np
-
-# Generate random data for the graph
-x = np.linspace(0, 10, 100)
-y = np.sin(x)
-
-# Create a line chart
-st.line_chart({"x": x, "y": y}, use_container_width=True)
-
-# Divider for visual separation
-st.divider()
-
-# Add a download button for sharing data
-st.subheader("Download Example")
-
-# Example data to download
-example_data = """
-Name,Age,Score
-Alice,24,89
-Bob,30,95
-Charlie,22,78
-"""
-
-# Button to download the example data as a CSV
-st.download_button(
-    label="Download Example Data",
-    data=example_data,
-    file_name="example_data.csv",
-    mime="text/csv"
-)
-
-# Add a footer message
-st.write("Thank you for exploring this app!")
-
-# End of the Streamlit app
-
-#Description: Run the app via terminal block
-#Author: Mohammad Vohra
-#Date: Jan 25, 2025
-#URL: https://www.linkedin.com/pulse/transform-your-applications-how-convert-streamlit-app-mohammad-vohra-1qfsf/
-import streamlit.web.cli as stcli
-import os, sys
-
-def resolve_path(path):
-    return os.path.abspath(os.path.join(os.getcwd(), path))
+# def resolve_path(path):
+#     return os.path.abspath(os.path.join(os.getcwd(), path))
 
 
-if __name__ == "__main__":
-    sys.argv = [
-        "streamlit",
-        "run",
-        resolve_path("app.py"),
-        "--global.developmentMode=false",
-    ]
-    sys.exit(stcli.main())
+# if __name__ == "__main__":
+#     sys.argv = [
+#         "streamlit",
+#         "run",
+#         resolve_path("app.py"),
+#         "--global.developmentMode=false",
+#     ]
+#     sys.exit(stcli.main())
