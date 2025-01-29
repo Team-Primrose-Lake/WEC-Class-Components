@@ -23,6 +23,7 @@ uploaded_file = st.sidebar.file_uploader("Upload Input File", type=["csv"])
 
 # Output file name
 outputfile = st.sidebar.text_input("Output CSV File Name", "output_centers.csv")
+output_image = "coverage_plot.png"
 
 # Output image file name
 #output_image = st.sidebar.text_input("Output Plot Image", "coverage_plot.png")
@@ -46,7 +47,7 @@ if st.sidebar.button("Run Processing"):
         
         try:
             # Call the MATLAB function
-            eng.process_geodata(temp_input_path, outputfile, r, overlap_factor, visualize_circles, nargout=1)
+            eng.firehall_algorithm(temp_input_path, outputfile, r, overlap_factor, visualize_circles, nargout=0)
             #eng.read_lat_lon(temp_input_path)
             st.success(f"Processing completed! Results saved to `{outputfile}`.")
             
@@ -72,7 +73,7 @@ if st.sidebar.button("Run Processing"):
             if visualize_circles and os.path.exists(output_image):
                 st.write("### Coverage Plot:")
                 image = Image.open(output_image)
-                st.image(image, caption="Coverage Plot", use_column_width=True)
+                st.image(image, caption="Coverage Plot", use_container_width=True)
             elif visualize_circles:
                 st.warning("Plot image not found.")
         
@@ -82,6 +83,8 @@ if st.sidebar.button("Run Processing"):
             # Clean up temporary file
             if os.path.exists(temp_input_path):
                 os.remove(temp_input_path)
+            if os.path.exists(output_image):
+                os.remove(output_image)
     else:
         st.warning("Please upload an input file to proceed.")
         
