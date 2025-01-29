@@ -4,19 +4,19 @@
 % Author: Marcus Fu, Taewoo Kim
 % Date: 2025-01-25
 
-inputfile = 'csv files/coordinates2005.csv'; % Input CSV file path
-outputfile = 'circle_centers.csv';          % Output CSV file path
-r = 2.5;                                            % Circle radius in km
-overlap_factor = 0.85;                               % Overlap factor (<1.0)
-visualize_circles = 1;                           % Set to true to visualize circles
-
-process_geodata(inputfile, outputfile, r, overlap_factor, visualize_circles);
+% inputfile = './data/coordinates2005.csv'; % Input CSV file path
+% outputfile = 'circle_centers.csv';          % Output CSV file path
+% r = 2.5;                                            % Circle radius in km
+% overlap_factor = 0.85;                               % Overlap factor (<1.0)
+% visualize_circles = 1;                           % Set to true to visualize circles
+% 
+% process_geodata(inputfile, outputfile, r, overlap_factor, visualize_circles);
 
 
 
 
 % main function
-function process_geodata(inputfile, outputfile, r, overlap_factor, visualize_circles)
+function firehall_algorithm(inputfile, outputfile, r, overlap_factor, visualize_circles)
 %% 1) Load latitude/longitude from CSV
 [lat, lon] = read_lat_lon(inputfile);
 
@@ -33,7 +33,6 @@ valid_centers = filter_valid_centers(centers,r,  x_km, y_km);
 plot_coverage(valid_centers, r, visualize_circles, x_km, y_km);
 %% 6) Save the final circle centers to a CSV file
 save_circle_centers(valid_centers, km_per_deg_lon, km_per_deg_lat, minlon, minlat, outputfile);
-
 end
 
 
@@ -112,7 +111,6 @@ function valid_centers = filter_valid_centers(centers, r, x_km, y_km)
     % create poly shape using x and y km
     region_poly = polyshape(x_km, y_km);
 
-    display(x_km);
     % check if the center is inside the poly region
     inside = isinterior(region_poly, centers(:,1), centers(:,2));
 
@@ -142,7 +140,7 @@ end
 % plot the valid center point with circles radius of 2.5km
 function plot_coverage(valid_centers, r, visualize_circles, x_km, y_km)
 
-    figure('Name','Fire Hall Coverage (Hex + Overlap)','Color','w');
+    figure('Name','Fire Hall Coverage (Hex + Overlap)','Color','w',  'Visible', 'off');
     hold on; axis equal;
     
     % plot the region
@@ -164,6 +162,9 @@ function plot_coverage(valid_centers, r, visualize_circles, x_km, y_km)
         end
     end
     hold off;
+
+    saveas(gcf, 'coverage_plot.png');
+
 end
 
 function save_circle_centers(circle_centers, km_per_deg_lon, km_per_deg_lat, minlon, minlat, filename)
