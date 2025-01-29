@@ -9,7 +9,7 @@ from PIL import Image
 
 # Function to start MATLAB engine and add paths
 eng = matlab.engine.start_matlab()
-eng.addpath(r"C:\\SHAMM\\github repos\\WEC-Class-Components\\matlab_scripts")
+eng.addpath(r"matlab_scripts")
 
 #eng = start_matlab()
 

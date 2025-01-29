@@ -1,0 +1,5 @@
+streamlit==1.23.1
+pandas==2.0.1
+Pillow==9.2.0
+numpy==1.24.2
+matlab.engine==9.12.0 # Replace with your installed version of MATLAB Engine API
